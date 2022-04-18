@@ -19,7 +19,7 @@ export default class UIClient {
     if (authCode) {
     params.append('grant_type', 'authorization_code');
     params.append('code', authCode);
-    params.append('redirect_uri', environment.uiServerURL);
+    params.append('redirect_uri', environment.UIServerURL);
     } else {
     params.append('grant_type', 'refresh_token');
     params.append('refresh_token', this.refreshToken);

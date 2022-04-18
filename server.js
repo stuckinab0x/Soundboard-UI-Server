@@ -25,16 +25,17 @@ async function hasAuth(req, res, next) {
       res.cookie('accesstoken', client.accessToken, { httpOnly: true });
       res.cookie('refreshtoken', client.refreshToken, { httpOnly: true });
     }
-    client.name ? next() : res.redirect(environment.authURL);
+    client.name ? next() : res.redirect(environment.AuthURL);
   return;
   }
-  res.redirect(environment.authURL);
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.redirect(environment.AuthURL);
 }
 
 const app = express();
 app.use(cookieParser());
 app.use(cors());
-app.use(express.text())
+app.use(express.text());
 app.use('/', hasAuth, express.static('public'));
 
 app.get('/user', async (req, res) => {
@@ -49,6 +50,13 @@ app.get('/user', async (req, res) => {
     soundList: client.soundList,
   }
   res.send(userInfo);
+})
+
+app.get('/logout', (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.clearCookie('accesstoken');
+  res.clearCookie('refreshtoken');
+  res.end();
 })
 
 app.post('/soundrequest', async (req, res) => {

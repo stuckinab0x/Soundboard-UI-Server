@@ -4,23 +4,44 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content ="width=device-width, initial-scale=1.0" />
         <title>Discord Soundboard Remote</title>
-    
-        <link rel="stylesheet" href="styles.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+        <link rel="stylesheet" href="styles.css"/>
     </head>
     <body id="body">
-        <nav>
-           <div>
+        <nav class="nav">
+           <div class="title-container">
             <h1>DiscordSoundboardBot</h1>
            </div> 
-                <div class="user-container">
-                    <div class="username-container">
-                        <h2 class="username" id="username"></h2>
-                    </div>
-                    <div id="avatar-container" class="avatar-container">
-                        <img id="avatar" src="" alt="" width="50px">
+            <div class="user-container">
+                <div class="username-container">
+                    <h2 class="username" id="username"></h2>
+                </div>
+                <div id="avatar-container" class="avatar-container">
+                    <img id="avatar" src="" class="avatar" alt="" width="50px">
+                    <div id="log-out-menu" class="log-out-menu log-out-menu-hide">
+                        <img id ="log-out-pointer" class="log-out-pointer" src="log-out-pointer.png" alt="">
+                        <button id="log-out-button" class="btn log-out-button" onclick="logOut()">log out</button>
                     </div>
                 </div>
-            </nav>
+            </div>
+        </nav>
+        <nav class="m-nav">
+            <div class="m-nav-left">
+                <div class="title-container">
+                    <h1>DiscordSoundboardBot</h1>
+                </div>
+                <div class="username-container">
+                    <h2 id="mobile-username" class="username"></h2>
+                </div>
+            </div>
+            <div id="m-avatar-container" class="avatar-container">
+                <img id="m-avatar" class="avatar" src="" alt="" width="50px">
+                <div id="m-log-out-menu" class="log-out-menu log-out-menu-hide">
+                    <img id ="m-log-out-pointer" class="log-out-pointer" src="log-out-pointer.png" alt="">
+                    <button id="m-log-out-button" class="btn log-out-button" onclick="logOut()">log out</button>
+                </div>
+            </div>
+        </nav>
         <main>
             <div class="main-container">
                 <div id="error-container" class="message-container">
@@ -31,7 +52,7 @@
                 </div>
                 <div id="btn-container" class="btn-container"></div> 
                 <div id="empty-search-container" class="message-container">
-                    <h1>no results ¯\_(ツ)_/¯</h1>
+                    <h1>No results ¯\_(ツ)_/¯</h1>
                 </div>
             </div>
         </main>
