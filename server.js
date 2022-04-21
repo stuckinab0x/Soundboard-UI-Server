@@ -25,7 +25,7 @@ async function hasAuth(req, res, next) {
       res.cookie('accesstoken', client.accessToken, { httpOnly: true });
       res.cookie('refreshtoken', client.refreshToken, { httpOnly: true });
     }
-    client.name ? next() : res.redirect(environment.AuthURL);
+    client.userData.name ? next() : res.redirect(environment.AuthURL);
   return;
   }
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -43,13 +43,7 @@ app.get('/user', async (req, res) => {
   await client.getUser();
   await client.getBotSounds();
   res.setHeader("Access-Control-Allow-Origin", "*");
-  const userInfo = {
-    userID: client.userID,
-    avatar: client.avatar,
-    name: client.name,
-    soundList: client.soundList,
-  }
-  res.send(userInfo);
+  res.send(client.userData);
 })
 
 app.get('/logout', (req, res) => {
@@ -62,7 +56,7 @@ app.get('/logout', (req, res) => {
 app.post('/soundrequest', async (req, res) => {
   const client = new UIClient(req.cookies);
   await client.getUser();
-  client.postSoundRequest(req.body);
+  client.soundRequest(req.body);
   res.end();
 })
 

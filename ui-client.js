@@ -5,10 +5,17 @@ export default class UIClient {
   constructor(cookies = null) {
     cookies ? this.accessToken = cookies.accesstoken : this.accessToken = '';
     cookies ? this.refreshToken = cookies.refreshtoken : this.refreshToken = '';
-    this.name = '';
-    this.userID = '';
-    this.avatar = '';
-    this.soundList = [];
+    this.userData = {
+      name: '',
+      userID: '',
+      avatar: '',
+      soundList: [],
+    }
+    this.botConfig = {
+      headers : {
+        Authorization: environment.botApiKey,
+      }
+    }
   }
 
   async authenticate(authCode = null) {
@@ -36,37 +43,34 @@ export default class UIClient {
 
   async getUser(retry = false) {
     await axios.get('https://discord.com/api/users/@me', {
-      // eslint-disable-next-line @typescript-eslint/quotes, quote-props
       headers: { "Authorization": `Bearer ${ this.accessToken }` },
     })
       .then(res => res.data)
       .then(data => {
-        this.name = data.username;
-        this.userID = data.id;
-        this.avatar = data.avatar;
+        this.userData.name = data.username;
+        this.userData.userID = data.id;
+        this.userData.avatar = data.avatar;
       })
       .catch(error => console.log(`getUser failed. refresh token tried yet: ${ retry }. ${ error }`));
     if (retry) return;
-    if (!this.name) await this.authenticate()
+    if (!this.userData.name) await this.authenticate()
       .then(() => this.getUser(true))
       .catch(error => console.log(error))
   }
 
   async getBotSounds() {
-    let soundList;
-    await axios.get(`${ environment.botURL }/soundlist`)
+    await axios.get(`${ environment.botURL }/soundlist`, this.botConfig)
       .then(res => res.data)
-      .then(data => { soundList = data; })
+      .then(data => { this.userData.soundList = data; })
       .catch(error => console.log(error))
-    this.soundList = soundList;
   }
 
-  async postSoundRequest(soundRequest){
+  async soundRequest(soundRequest){
     const body = {
-      userID: this.userID,
+      userID: this.userData.userID,
       soundRequest: soundRequest,
     }
-    axios.post(`${ environment.botURL }/soundrequest`, body)
+    axios.post(`${ environment.botURL }/soundrequest`, body, this.botConfig)
       .catch(error => console.log(error));
   }
 }

@@ -1,13 +1,12 @@
 // TODO: add state to oAuth2 
 
-const buttonContainer = document.getElementById('btn-container');
 const serverURL = 'http://localhost:8080'
+const buttonContainer = document.getElementById('btn-container');
 
 function fetchUser() {
   fetch('/user', { method: 'GET' })
     .then(response => response.json())
     .then(data => {
-      console.log(data.avatar);
       window.sessionStorage.setItem('userID', data.userID);
       window.sessionStorage.setItem('avatar', data.avatar);
       window.sessionStorage.setItem('username', data.name);
@@ -35,7 +34,6 @@ function makeButtons(data) {
 }
 
 function postSound(soundChoice) {
-  console.log(soundChoice)
   fetch('/soundrequest', {
     method: 'POST',
     headers: {
@@ -43,7 +41,6 @@ function postSound(soundChoice) {
     },
     body: soundChoice,
   })
-  .then(response => response.json())
   .catch(error => console.log(error))
 }
 
