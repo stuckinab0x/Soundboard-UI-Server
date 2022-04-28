@@ -73,4 +73,9 @@ export default class UIClient {
     axios.post(`${ environment.botURL }/soundrequest`, body, this.botConfig)
       .catch(error => console.log(error));
   }
+
+  async skipRequest(all, userID) {
+    await axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID: userID }, this.botConfig)
+      .catch(error => console.log(error))
+  }
 }
