@@ -25,7 +25,7 @@ async function hasAuth(req, res, next) {
       res.cookie('accesstoken', client.accessToken, { httpOnly: true });
       res.cookie('refreshtoken', client.refreshToken, { httpOnly: true });
     }
-    client.name ? next() : res.redirect(environment.AuthURL);
+    client.userData.name ? next() : res.redirect(environment.AuthURL);
   return;
   }
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -43,26 +43,30 @@ app.get('/user', async (req, res) => {
   await client.getUser();
   await client.getBotSounds();
   res.setHeader("Access-Control-Allow-Origin", "*");
-  const userInfo = {
-    userID: client.userID,
-    avatar: client.avatar,
-    name: client.name,
-    soundList: client.soundList,
-  }
-  res.send(userInfo);
+  res.send(client.userData);
+})
+
+app.post('/soundrequest', async (req, res) => {
+  console.log('Sound request.')
+  const client = new UIClient(req.cookies);
+  await client.getUser();
+  client.soundRequest(req.body);
+  res.end();
+})
+
+app.get('/skip', async (req, res) => {
+  const client = new UIClient(req.cookies);
+  await client.getUser();
+  console.log(`Skip request. All: ${ req.query.skipAll }`)
+  if (req.query.skipAll === 'true') await client.skipRequest(true, client.userData.userID);
+  else await client.skipRequest(false, client.userData.userID);
+  res.end();
 })
 
 app.get('/logout', (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.clearCookie('accesstoken');
   res.clearCookie('refreshtoken');
-  res.end();
-})
-
-app.post('/soundrequest', async (req, res) => {
-  const client = new UIClient(req.cookies);
-  await client.getUser();
-  client.postSoundRequest(req.body);
   res.end();
 })
 
