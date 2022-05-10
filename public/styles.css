@@ -1,5 +1,5 @@
 html {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     font-size: 14pt;
 }
 
@@ -11,6 +11,10 @@ html {
 
 *:focus {
     outline: none;
+}
+
+.btn {
+    cursor: pointer
 }
 
 .btn:hover {
@@ -29,7 +33,6 @@ body {
 
 .body-error {
     background-color: #2c2122;
-    margin: 0px;
 }
 
 nav {
@@ -39,16 +42,27 @@ nav {
     justify-content: space-between;
 }
 
+.nav-left {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
 @media only screen and (max-width: 780px) {
-    .nav {
-        flex-wrap: wrap;
+    .nav-left {
+        flex-direction: column;
+    }
+}    
+
+@media only screen and (max-width: 780px) {
+    .title-container {
+        max-height: 20px;
     }
 }
 
 @media only screen and (max-width: 780px) {
     .title-container    {
         max-height: 20px;
-        order: 0;
     }
 }
 
@@ -66,18 +80,6 @@ h4 {
     color: rgb(236, 236, 236);
 }
 
-@media only screen and (max-width: 780px) {
-    h1 {
-        padding: 0px 20px;
-        font-size: 2rem;
-        color: #c1b8fd;
-    }
-    
-    h2 {
-        font-size: 1.5rem;
-    }
-}
-
 .user-container {
     display: flex;
     justify-content: right;
@@ -87,14 +89,12 @@ h4 {
 .username-container {
     display: flex;
     align-items: center;
-    margin-left: auto;
     padding: 0px 10px;
 }
 
 @media only screen and (max-width: 780px) {
     .username-container {
-        margin: -30px 0px 0px 15px;
-        order: 2;
+        margin: 14px 0px 0px 15px;
         width: 100%
     }
 }
@@ -113,8 +113,7 @@ h4 {
 @media only screen and (max-width: 780px) {
     .avatar-container {
         margin: 0px 10px;
-        padding: 12px 7px 0px 7px;
-        order: 1;
+        padding: 0px 6px;
     }
 }
 
@@ -124,6 +123,7 @@ h4 {
     border-width: 2px;
     overflow: hidden;
     box-shadow: 3px 3px 5px #222324;
+    cursor: pointer;
 }
 
 .avatar:hover {
