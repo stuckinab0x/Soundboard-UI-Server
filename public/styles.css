@@ -41,28 +41,14 @@ nav {
 
 @media only screen and (max-width: 780px) {
     .nav {
-        display: none;
+        flex-wrap: wrap;
     }
-}
-
-.m-nav {
-    display: none;
 }
 
 @media only screen and (max-width: 780px) {
-    .m-nav {
-        background-color: #2f3136;
-        box-shadow: 0px 5px 5px 2px #222324;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .m-nav-left {
-        max-width: 70%;
-    }
-
     .title-container    {
         max-height: 20px;
+        order: 0;
     }
 }
 
@@ -101,12 +87,15 @@ h4 {
 .username-container {
     display: flex;
     align-items: center;
+    margin-left: auto;
     padding: 0px 10px;
 }
 
 @media only screen and (max-width: 780px) {
     .username-container {
-        margin: 0px 15px;
+        margin: -30px 0px 0px 15px;
+        order: 2;
+        width: 100%
     }
 }
 
@@ -117,13 +106,15 @@ h4 {
 .avatar-container {
     display: flex;
     align-items: center;
-    padding: 0px  7px;
+    padding: 0px 20px 0px 7px;
     position: relative;
 }
 
 @media only screen and (max-width: 780px) {
     .avatar-container {
         margin: 0px 10px;
+        padding: 12px 7px 0px 7px;
+        order: 1;
     }
 }
 
