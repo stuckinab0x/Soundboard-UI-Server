@@ -3,23 +3,18 @@
 const buttonContainer = document.getElementById('btn-container');
 
 function fetchUser() {
-  fetch('/user', { method: 'GET' })
+  fetch('/user')
     .then(response => response.json())
     .then(data => {
-      window.sessionStorage.setItem('userID', data.userID);
-      window.sessionStorage.setItem('avatar', data.avatar);
-      window.sessionStorage.setItem('username', data.name);
       document.getElementById('username').innerHTML = data.name;
-      document.getElementById('mobile-username').innerHTML = data.name;
       document.getElementById('avatar').src = `https://cdn.discordapp.com/avatars/${ data.userID }/${ data.avatar }.png`;
-      document.getElementById('m-avatar').src = `https://cdn.discordapp.com/avatars/${ data.userID }/${ data.avatar }.png`;
       makeButtons(data.soundList);
     })
     .catch(error => {
       console.error(error);
-        document.getElementById('body').classList.add('body-error')
-        document.getElementById('error-container').classList.add('message-container-show')
-        document.getElementById('search-container').classList.add('search-hide');
+      document.getElementById('body').classList.add('body-error')
+      document.getElementById('error-container').classList.add('message-container-show')
+      document.getElementById('search-container').classList.add('search-hide');
     });
 }
 
@@ -69,8 +64,7 @@ const skipRequest = debounce(async (all = false) => {
 }, 500, true)
 
 async function logOut() {
-  sessionStorage.clear();
-  await fetch('/logout', { method: 'GET' })
+  await fetch('/logout')
   .catch(error => console.log(error))
   window.location.reload();
 }
@@ -78,13 +72,12 @@ async function logOut() {
 document.addEventListener('DOMContentLoaded', () => fetchUser());
 
 document.addEventListener('click', e => {
-  const logOutMenus = Array.from(document.getElementsByClassName('log-out-menu'));
+  const logOutMenu = document.getElementById('log-out-menu')
   const avatar = document.getElementById('avatar');
-  const mobileAvatar = document.getElementById('m-avatar');
   if (e.target === document.getElementById('skip-one')) skipRequest();
   if (e.target === document.getElementById('skip-all')) skipRequest(true);
-  if (e.target === avatar || e.target === mobileAvatar) logOutMenus.forEach(i => i.classList.toggle('log-out-menu-hide'));
-  if (e.target !== avatar && e.target !== mobileAvatar) logOutMenus.forEach(i => i.classList.add('log-out-menu-hide'));
+  if (e.target === avatar) logOutMenu.classList.toggle('log-out-menu-hide');
+  if (e.target !== avatar) logOutMenu.classList.add('log-out-menu-hide');
   if (e.target.classList.contains('sound-btn')) {
     e.target.classList.add('btn-red');
     postSound(e.target);
