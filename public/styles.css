@@ -13,6 +13,10 @@ html {
     outline: none;
 }
 
+.material-icons {
+    color: white;
+}
+
 .btn {
     cursor: pointer
 }
@@ -202,6 +206,31 @@ h4 {
 
 .search-container {
     display: flex;
+    position: relative;
+}
+
+.search-cancel {
+    display: none;
+    right: 68px;
+    top: 27px;
+    position: absolute;
+    opacity: 50%;
+}
+
+.search-cancel-show {
+    display: block;
+}
+
+@media only screen and (max-width: 780px) {
+    .search-cancel {
+        right: 20px;
+        top: 16px;
+        font-size: 1.8rem;
+    }
+}
+
+.search-cancel:hover {
+    opacity: 100%;
 }
 
 .skip-button {

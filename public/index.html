@@ -4,8 +4,10 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content ="width=device-width, initial-scale=1.0" />
         <title>Discord Soundboard Remote</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
         <link rel="stylesheet" href="styles.css"/>
+        
     </head>
     <body id="body">
         <nav class="nav">
@@ -36,6 +38,7 @@
                 </div>
                 <div id="search-container" class="search-container">
                     <input type="text" placeholder=" search for a sound..." id="search" class="search" onkeyup="searchFilter()">
+                    <span id="search-cancel" class="material-icons search-cancel">cancel</span>
                 </div>
                 <div id="btn-container" class="btn-container"></div> 
                 <div id="empty-search-container" class="message-container">

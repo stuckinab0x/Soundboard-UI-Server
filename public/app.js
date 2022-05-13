@@ -1,6 +1,7 @@
 // TODO: add state to oAuth2?
 
 const buttonContainer = document.getElementById('btn-container');
+const searchCancel = document.getElementById('search-cancel');
 
 function fetchUser() {
   fetch('/user')
@@ -27,15 +28,19 @@ function makeButtons(data) {
   })
 }
 
-function searchFilter() {
+function searchFilter(cancelButton = false) {
+  let search = document.getElementById('search');
+  if (cancelButton) search.value = '';
+  search.focus();
+  search.value ? searchCancel.classList.add('search-cancel-show') : searchCancel.classList.remove('search-cancel-show');
   const searchMessage = document.getElementById('empty-search-container');
+  
   searchMessage.classList.remove('message-container-show');
   const buttons = Array.from(buttonContainer.children);
-  const searchInput = document.getElementById('search').value;
   buttons.forEach(i => i.classList.add('btn-hide'))
   buttons.forEach(i => { 
     const btnName = i.innerHTML.toUpperCase();
-    if (btnName.includes(searchInput.toUpperCase())) i.classList.remove('btn-hide'); 
+    if (btnName.includes(search.value.toUpperCase())) i.classList.remove('btn-hide'); 
   })
   if (buttons.every(i => i.classList.contains('btn-hide'))) searchMessage.classList.add('message-container-show');
 }
@@ -78,6 +83,7 @@ document.addEventListener('click', e => {
   if (e.target === document.getElementById('skip-all')) skipRequest(true);
   if (e.target === avatar) logOutMenu.classList.toggle('log-out-menu-hide');
   if (e.target !== avatar) logOutMenu.classList.add('log-out-menu-hide');
+  if (e.target === searchCancel) searchFilter(true);
   if (e.target.classList.contains('sound-btn')) {
     e.target.classList.add('btn-red');
     postSound(e.target);
