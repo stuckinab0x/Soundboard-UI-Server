@@ -2,10 +2,12 @@
 <html lang="en>">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content ="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content ="width=device-width, initial-scale=1.0"/>
         <title>Discord Soundboard Remote</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
         <link rel="stylesheet" href="styles.css"/>
+        
     </head>
     <body id="body">
         <nav class="nav">
@@ -30,14 +32,22 @@
                 <div id="error-container" class="message-container">
                     <h1>Server error.</h1><h4>*/sound horrible mistake*</h4>
                 </div>
-                <div class="skip-container">
-                    <button id="skip-one" class="skip-button btn">Skip one</button>
-                    <button id="skip-all" class="skip-button btn">Skip all</button>
+                <div class="features-container">
+                    <div class="skip-container">
+                        <button id="skip-one" class="skip-button btn">Skip one</button>
+                        <button id="skip-all" class="skip-button btn">Skip all</button>
+                    </div>
+                    <div class="filters-container">
+                        <div id="search-container" class="search-container">
+                            <input type="text" placeholder=" search for a sound..." id="search" class="search" onkeyup="searchFilter()">
+                            <span id="search-cancel" class="material-icons search-cancel icon-btn">cancel</span>
+                        </div>
+                        <div class="filter-btns-container">
+                            <button id="favorites-btn" class="filter-btn btn">Favorites</button>
+                        </div>
+                    </div>
                 </div>
-                <div id="search-container" class="search-container">
-                    <input type="text" placeholder=" search for a sound..." id="search" class="search" onkeyup="searchFilter()">
-                </div>
-                <div id="btn-container" class="btn-container"></div> 
+                <div id="btn-container" class="btn-container btn-container-show"></div>
                 <div id="empty-search-container" class="message-container">
                     <h1>No results ¯\_(ツ)_/¯</h1>
                 </div>

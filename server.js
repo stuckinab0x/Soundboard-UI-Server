@@ -5,14 +5,17 @@ import cors from 'cors';
 import environment from './environment.js';
 import UIClient from './ui-client.js';
 
+const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI
+(environment.UIServerURL) }&response_type=code&scope=identify`;
+
 async function hasAuth(req, res, next) {
   if (req.query.code) {
     const client = new UIClient();
     await client.authenticate(req.query.code)
     .then(() => {
       if (client.accessToken) {
-      res.cookie('accesstoken', client.accessToken, { httpOnly: true });
-      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true });
+      res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
       res.redirect('/')
       }
     })
@@ -22,14 +25,14 @@ async function hasAuth(req, res, next) {
     const client = new UIClient(req.cookies);
     await client.getUser();
     if (client.accessToken !== req.cookies.accesstoken) {
-      res.cookie('accesstoken', client.accessToken, { httpOnly: true });
-      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true });
+      res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
     }
-    client.userData.name ? next() : res.redirect(environment.AuthURL);
+    client.userData.name ? next() : res.redirect(authURL);
   return;
   }
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.redirect(environment.AuthURL);
+  res.redirect(authURL);
 }
 
 const app = express();
