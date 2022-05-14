@@ -5,6 +5,9 @@ import cors from 'cors';
 import environment from './environment.js';
 import UIClient from './ui-client.js';
 
+const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI
+(environment.UIServerURL) }&response_type=code&scope=identify`;
+
 async function hasAuth(req, res, next) {
   if (req.query.code) {
     const client = new UIClient();
@@ -25,11 +28,11 @@ async function hasAuth(req, res, next) {
       res.cookie('accesstoken', client.accessToken, { httpOnly: true });
       res.cookie('refreshtoken', client.refreshToken, { httpOnly: true });
     }
-    client.userData.name ? next() : res.redirect(environment.AuthURL);
+    client.userData.name ? next() : res.redirect(authURL);
   return;
   }
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.redirect(environment.AuthURL);
+  res.redirect(authURL);
 }
 
 const app = express();

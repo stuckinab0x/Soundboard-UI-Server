@@ -2,6 +2,20 @@
 
 const buttonContainer = document.getElementById('btn-container');
 const searchCancel = document.getElementById('search-cancel');
+const favorites = {
+  list: [],
+  save() {
+    window.localStorage.setItem('favorites', JSON.stringify(this.list));
+  },
+  load() {
+    const stored = JSON.parse(window.localStorage.getItem('favorites'));
+    if (stored) this.list = stored;
+  },
+  remove(soundName) {
+    this.list = this.list.filter(i => i !== soundName);
+  }
+}
+
 
 function fetchUser() {
   fetch('/user')
@@ -21,10 +35,23 @@ function fetchUser() {
 
 function makeButtons(data) {
     data.forEach(i => {
-      const e = document.createElement('button');
-      e.innerHTML = i;
-      e.classList.add('btn', 'sound-btn')
-      buttonContainer.appendChild(e);
+      const div = document.createElement('div');
+      const btn = document.createElement('button');
+      const fav = document.createElement('span');
+      fav.classList.add('material-icons', 'favStar', 'icon-btn');
+      favorites.load();
+      if (favorites.list.find(x => x === i)) {
+        div.classList.add('fav');
+        fav.innerHTML = 'star';
+        fav.classList.add('fav-set');
+      } else fav.innerHTML = 'star_outline';
+      btn.innerHTML = i;
+      btn.classList.add('btn', 'sound-btn');
+      div.id = i;
+      div.classList.add('sound-tile');
+      div.appendChild(btn);
+      div.appendChild(fav);
+      buttonContainer.appendChild(div);
   })
 }
 
@@ -34,12 +61,11 @@ function searchFilter(cancelButton = false) {
   search.focus();
   search.value ? searchCancel.classList.add('search-cancel-show') : searchCancel.classList.remove('search-cancel-show');
   const searchMessage = document.getElementById('empty-search-container');
-  
   searchMessage.classList.remove('message-container-show');
   const buttons = Array.from(buttonContainer.children);
   buttons.forEach(i => i.classList.add('btn-hide'))
   buttons.forEach(i => { 
-    const btnName = i.innerHTML.toUpperCase();
+    const btnName = i.id.toUpperCase();
     if (btnName.includes(search.value.toUpperCase())) i.classList.remove('btn-hide'); 
   })
   if (buttons.every(i => i.classList.contains('btn-hide'))) searchMessage.classList.add('message-container-show');
@@ -79,15 +105,43 @@ document.addEventListener('DOMContentLoaded', () => fetchUser());
 document.addEventListener('click', e => {
   const logOutMenu = document.getElementById('log-out-menu')
   const avatar = document.getElementById('avatar');
+  const favsBtn = document.getElementById('favorites-btn');
   if (e.target === document.getElementById('skip-one')) skipRequest();
   if (e.target === document.getElementById('skip-all')) skipRequest(true);
   if (e.target === avatar) logOutMenu.classList.toggle('log-out-menu-hide');
   if (e.target !== avatar) logOutMenu.classList.add('log-out-menu-hide');
   if (e.target === searchCancel) searchFilter(true);
+  if (e.target === favsBtn && e.target.classList.contains('filter-btn-on')){
+    e.target.classList.remove('filter-btn-on');
+    const buttons = Array.from(buttonContainer.children)
+    buttons.forEach(i => i.classList.remove('btn-filter-fav'));
+  } else if (e.target === favsBtn) {
+    e.target.classList.add('filter-btn-on');
+    const buttons = Array.from(buttonContainer.children);
+    buttons.forEach(i => {
+      if (!i.classList.contains('fav')) i.classList.add('btn-filter-fav');
+    })
+  }
   if (e.target.classList.contains('sound-btn')) {
     e.target.classList.add('btn-red');
     postSound(e.target);
     setTimeout(() => e.target.classList.remove('btn-red'), 1)
+  }
+  if (e.target.classList.contains('favStar') && e.target.classList.contains('fav-set')) {
+    const favStar = e.target;
+    favStar.innerHTML = 'star_outline';
+    favStar.classList.remove('fav-set');
+    favStar.parentElement.classList.remove('fav');
+    favorites.remove(e.target.parentElement.id);
+    favorites.save();
+  }
+  else if (e.target.classList.contains('favStar')) {
+    const favStar = e.target;
+    favStar.parentElement.classList.add('fav');
+    favStar.innerHTML = 'star';
+    favStar.classList.add('fav-set');
+    favorites.list.push(e.target.parentElement.id);
+    favorites.save();
   }
 })
 
