@@ -14,8 +14,8 @@ async function hasAuth(req, res, next) {
     await client.authenticate(req.query.code)
     .then(() => {
       if (client.accessToken) {
-      res.cookie('accesstoken', client.accessToken, { httpOnly: true });
-      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true });
+      res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
       res.redirect('/')
       }
     })
@@ -25,8 +25,8 @@ async function hasAuth(req, res, next) {
     const client = new UIClient(req.cookies);
     await client.getUser();
     if (client.accessToken !== req.cookies.accesstoken) {
-      res.cookie('accesstoken', client.accessToken, { httpOnly: true });
-      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true });
+      res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
     }
     client.userData.name ? next() : res.redirect(authURL);
   return;
