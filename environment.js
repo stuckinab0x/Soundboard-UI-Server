@@ -4,4 +4,5 @@ export default {
   botURL: process.env.BOT_URL,
   botApiKey: process.env.BOT_API_KEY,
   UIServerURL: process.env.UI_SERVER_URL,
+  port: process.env.PORT ?? 80,
 };
