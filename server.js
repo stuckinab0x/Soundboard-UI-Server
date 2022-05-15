@@ -22,13 +22,14 @@ async function hasAuth(req, res, next) {
     return;
   }
 
-  if (req.cookies.accesstoken) {
+  if (req.cookies.accesstoken || req.cookies.refreshtoken) {
     const client = new UIClient(req.cookies);
     await client.getUser();
     if (client.accessToken !== req.cookies.accesstoken) {
       res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
       res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
     }
+    req.client = client;
     client.userData.name ? next() : res.redirect(authURL);
     return;
   }
@@ -52,26 +53,20 @@ app.get('/logout', (req, res, next) => {
 app.use(hasAuth);
 
 app.get('/user', async (req, res) => {
-  const client = new UIClient(req.cookies);
-  await client.getUser();
-  await client.getBotSounds();
-  res.send(client.userData);
+  await req.client.getBotSounds();
+  res.send(req.client.userData);
 })
 
 app.post('/soundrequest', async (req, res) => {
   console.log('Sound request.')
-  const client = new UIClient(req.cookies);
-  await client.getUser();
-  await client.soundRequest(req.body);
+  await req.client.soundRequest(req.body);
   res.end();
 })
 
 app.get('/skip', async (req, res) => {
-  const client = new UIClient(req.cookies);
-  await client.getUser();
   console.log(`Skip request. All: ${ req.query.skipAll }`)
-  if (req.query.skipAll === 'true') await client.skipRequest(true, client.userData.userID);
-  else await client.skipRequest(false, client.userData.userID);
+  if (req.query.skipAll === 'true') await req.client.skipRequest(true, req.client.userData.userID);
+  else await req.client.skipRequest(false, req.client.userData.userID);
   res.end();
 })
 
