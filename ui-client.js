@@ -58,14 +58,14 @@ export default class UIClient {
       .catch(error => console.log(error))
   }
 
-  async getBotSounds() {
-    await axios.get(`${ environment.botURL }/soundlist`, this.botConfig)
+  getBotSounds() {
+    axios.get(`${ environment.botURL }/soundlist`, this.botConfig)
       .then(res => res.data)
       .then(data => { this.userData.soundList = data; })
       .catch(error => console.log(error))
   }
 
-  async soundRequest(soundRequest){
+  soundRequest(soundRequest){
     const body = {
       userID: this.userData.userID,
       soundRequest: soundRequest,
@@ -74,8 +74,8 @@ export default class UIClient {
       .catch(error => console.log(error));
   }
 
-  async skipRequest(all, userID) {
-    await axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID: userID }, this.botConfig)
+  skipRequest(all, userID) {
+    axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID: userID }, this.botConfig)
       .catch(error => console.log(error))
   }
 }
