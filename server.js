@@ -12,15 +12,16 @@ async function hasAuth(req, res, next) {
   if (req.query.code) {
     const client = new UIClient();
     await client.authenticate(req.query.code)
-    .then(() => {
-      if (client.accessToken) {
-      res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
-      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
-      res.redirect('/')
-      }
-    })
-  return;
+      .then(() => {
+        if (client.accessToken) {
+          res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+          res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
+          res.redirect('/')
+        }
+      })
+    return;
   }
+
   if (req.cookies.accesstoken) {
     const client = new UIClient(req.cookies);
     await client.getUser();
@@ -29,15 +30,16 @@ async function hasAuth(req, res, next) {
       res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
     }
     client.userData.name ? next() : res.redirect(authURL);
-  return;
+    return;
   }
-  res.setHeader("Access-Control-Allow-Origin", "*");
+
   res.redirect(authURL);
 }
 
 const app = express();
+
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({ origin: environment.UIServerURL }));
 app.use(express.text());
 app.use('/', hasAuth, express.static('public'));
 
@@ -45,7 +47,6 @@ app.get('/user', async (req, res) => {
   const client = new UIClient(req.cookies);
   await client.getUser();
   await client.getBotSounds();
-  res.setHeader("Access-Control-Allow-Origin", "*");
   res.send(client.userData);
 })
 
@@ -53,7 +54,7 @@ app.post('/soundrequest', async (req, res) => {
   console.log('Sound request.')
   const client = new UIClient(req.cookies);
   await client.getUser();
-  client.soundRequest(req.body);
+  await client.soundRequest(req.body);
   res.end();
 })
 
@@ -67,12 +68,11 @@ app.get('/skip', async (req, res) => {
 })
 
 app.get('/logout', (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
   res.clearCookie('accesstoken');
   res.clearCookie('refreshtoken');
   res.end();
 })
 
-app.listen(80, () => {
+app.listen(environment.port, () => {
   console.log('listening...')
 })
