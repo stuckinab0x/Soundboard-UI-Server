@@ -36,7 +36,7 @@ export default class UIClient {
     .then(data => {
       this.accessToken = data.access_token;
       this.refreshToken = data.refresh_token;
-      console.log(`retrieved token from discord: ${ data.access_token }`);
+      console.log(`token response from discord`);
     })
     .catch(error => console.log(error));
   }
@@ -59,10 +59,10 @@ export default class UIClient {
   }
 
   getBotSounds() {
-    axios.get(`${ environment.botURL }/soundlist`, this.botConfig)
+    return axios.get(`${ environment.botURL }/soundlist`, this.botConfig)
       .then(res => res.data)
       .then(data => { this.userData.soundList = data; })
-      .catch(error => console.log(error))
+      .catch(error => console.log(error));
   }
 
   soundRequest(soundRequest){
@@ -70,12 +70,12 @@ export default class UIClient {
       userID: this.userData.userID,
       soundRequest: soundRequest,
     }
-    axios.post(`${ environment.botURL }/soundrequest`, body, this.botConfig)
+    return axios.post(`${ environment.botURL }/soundrequest`, body, this.botConfig)
       .catch(error => console.log(error));
   }
 
   skipRequest(all, userID) {
-    axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID: userID }, this.botConfig)
+    return axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID: userID }, this.botConfig)
       .catch(error => console.log(error))
   }
 }
