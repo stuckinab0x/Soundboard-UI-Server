@@ -6,7 +6,7 @@ import environment from './environment.js';
 import UIClient from './ui-client.js';
 
 const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI
-(environment.UIServerURL) }&response_type=code&scope=identify`;
+(environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
 
 async function hasAuth(req, res, next) {
   if (req.query.code) {
@@ -37,11 +37,19 @@ async function hasAuth(req, res, next) {
 }
 
 const app = express();
+const serveStatic = express.static('public', { extensions: ['html'] });
 
 app.use(cookieParser());
 app.use(cors({ origin: environment.UIServerURL }));
 app.use(express.text());
-app.use('/', hasAuth, express.static('public'));
+
+app.get('/logout', (req, res, next) => {
+  res.clearCookie('accesstoken');
+  res.clearCookie('refreshtoken');
+  next();
+}, serveStatic)
+
+app.use(hasAuth);
 
 app.get('/user', async (req, res) => {
   const client = new UIClient(req.cookies);
@@ -67,11 +75,7 @@ app.get('/skip', async (req, res) => {
   res.end();
 })
 
-app.get('/logout', (req, res) => {
-  res.clearCookie('accesstoken');
-  res.clearCookie('refreshtoken');
-  res.end();
-})
+app.use(serveStatic);
 
 app.listen(environment.port, () => {
   console.log('listening...')
