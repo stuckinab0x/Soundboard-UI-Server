@@ -64,9 +64,9 @@ function searchFilter(cancelButton = false) {
   searchMessage.classList.remove('message-container-show');
   const buttons = Array.from(buttonContainer.children);
   buttons.forEach(i => i.classList.add('btn-hide'))
-  buttons.forEach(i => { 
+  buttons.forEach(i => {
     const btnName = i.id.toUpperCase();
-    if (btnName.includes(search.value.toUpperCase())) i.classList.remove('btn-hide'); 
+    if (btnName.includes(search.value.toUpperCase())) i.classList.remove('btn-hide');
   })
   if (buttons.every(i => i.classList.contains('btn-hide'))) searchMessage.classList.add('message-container-show');
 }
@@ -86,19 +86,13 @@ const postSound = debounce(soundButton => {
 }, 2000, true)
 
 const skipRequest = debounce(async (all = false) => {
-  await fetch(`/skip?skipAll=${ all }`, { 
+  await fetch(`/skip?skipAll=${ all }`, {
     headers: {
       'Content-Type': 'text/plain'
     },
   })
   .catch(error => console.log(error))
 }, 500, true)
-
-async function logOut() {
-  await fetch('/logout')
-  .catch(error => console.log(error))
-  window.location.reload();
-}
 
 document.addEventListener('DOMContentLoaded', () => fetchUser());
 
@@ -151,18 +145,18 @@ function debounce(func, wait, immediate) {
   return function executedFunction() {
     var context = this;
     var args = arguments;
-	    
+
     var later = function() {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
 
     var callNow = immediate && !timeout;
-	
+
     clearTimeout(timeout);
 
     timeout = setTimeout(later, wait);
-	
+
     if (callNow) func.apply(context, args);
   };
-};
+}
