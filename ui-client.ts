@@ -1,8 +1,28 @@
-import axios from 'axios'
-import environment from './environment.js'
+import axios, { AxiosRequestConfig } from 'axios'
+import environment from './environment'
+
+declare global {
+  namespace Express {
+    interface Request {
+      client: UIClient;
+    }
+  }
+}
+
+interface UserData {
+  name: string;
+  userID: string;
+  avatar: string;
+  soundList: string[];
+}
 
 export default class UIClient {
-  constructor(cookies = null) {
+  public accessToken: string;
+  public refreshToken: string;
+  public userData: UserData;
+  private botConfig: AxiosRequestConfig;
+  
+  constructor(cookies: any = null) {
     cookies ? this.accessToken = cookies.accesstoken : this.accessToken = '';
     cookies ? this.refreshToken = cookies.refreshtoken : this.refreshToken = '';
     this.userData = {
@@ -18,7 +38,7 @@ export default class UIClient {
     }
   }
 
-  async authenticate(authCode = null) {
+  async authenticate(authCode: any = null) {
     const params = new URLSearchParams({
       client_id: environment.clientID,
       client_secret: environment.clientSecret,
@@ -65,7 +85,7 @@ export default class UIClient {
       .catch(error => console.log(error));
   }
 
-  soundRequest(soundRequest){
+  soundRequest(soundRequest: string){
     const body = {
       userID: this.userData.userID,
       soundRequest: soundRequest,
@@ -74,7 +94,7 @@ export default class UIClient {
       .catch(error => console.log(error));
   }
 
-  skipRequest(all, userID) {
+  skipRequest(all: boolean, userID: string) {
     return axios.post(`${ environment.botURL }/skip`, { skipAll: all, userID: userID }, this.botConfig)
       .catch(error => console.log(error))
   }

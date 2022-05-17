@@ -1,14 +1,14 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import environment from './environment.js';
-import UIClient from './ui-client.js';
+import environment from './environment';
+import UIClient from './ui-client';
 
 const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI
 (environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
 
-async function hasAuth(req, res, next) {
+const hasAuth: RequestHandler = async (req, res, next) => {
   if (req.query.code) {
     const client = new UIClient();
     await client.authenticate(req.query.code)
