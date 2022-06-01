@@ -3,15 +3,15 @@ import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import environment from './environment';
-import UIClient from './ui-client';
+import soundBoardClient from './soundboard-client';
 
 const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI
 (environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
 
 const hasAuth: RequestHandler = async (req, res, next) => {
   if (req.query.code) {
-    const client = new UIClient();
-    await client.authenticate(req.query.code)
+    const client = new soundBoardClient();
+    await client.authenticate(String(req.query.code))
       .then(() => {
         if (client.accessToken) {
           res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
@@ -23,7 +23,7 @@ const hasAuth: RequestHandler = async (req, res, next) => {
   }
 
   if (req.cookies.accesstoken || req.cookies.refreshtoken) {
-    const client = new UIClient(req.cookies);
+    const client = new soundBoardClient(req.cookies);
     await client.getUser();
     if (client.accessToken !== req.cookies.accesstoken) {
       res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });

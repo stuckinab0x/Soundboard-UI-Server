@@ -1,10 +1,10 @@
-import axios, { AxiosRequestConfig } from 'axios'
-import environment from './environment'
+import axios, { AxiosRequestConfig } from 'axios';
+import environment from './environment';
 
 declare global {
   namespace Express {
     interface Request {
-      client: UIClient;
+      client: soundBoardClient;
     }
   }
 }
@@ -16,13 +16,13 @@ interface UserData {
   soundList: string[];
 }
 
-export default class UIClient {
+export default class soundBoardClient {
   public accessToken: string;
   public refreshToken: string;
   public userData: UserData;
   private botConfig: AxiosRequestConfig;
   
-  constructor(cookies: any = null) {
+  constructor(cookies?: any) {
     cookies ? this.accessToken = cookies.accesstoken : this.accessToken = '';
     cookies ? this.refreshToken = cookies.refreshtoken : this.refreshToken = '';
     this.userData = {
@@ -38,7 +38,7 @@ export default class UIClient {
     }
   }
 
-  async authenticate(authCode: any = null) {
+  async authenticate(authCode?: string) {
     const params = new URLSearchParams({
       client_id: environment.clientID,
       client_secret: environment.clientSecret,
@@ -61,7 +61,7 @@ export default class UIClient {
     .catch(error => console.log(error));
   }
 
-  async getUser(retry = false) {
+  async getUser(retry?: boolean) {
     await axios.get('https://discord.com/api/users/@me', {
       headers: { "Authorization": `Bearer ${ this.accessToken }` },
     })
