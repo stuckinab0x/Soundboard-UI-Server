@@ -1,9 +1,16 @@
+import * as applicationInsights from 'applicationinsights';
 import express, { RequestHandler } from 'express';
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import environment from './environment';
 import UIClient from './ui-client';
+
+if (process.env.NODE_ENV === 'production') {
+  applicationInsights.setup();
+  applicationInsights.defaultClient.context.tags[applicationInsights.defaultClient.context.keys.cloudRole] = 'Web backend';
+  applicationInsights.start();
+}
 
 const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environment.clientID }&redirect_uri=${ encodeURI
 (environment.UIServerURL) }&response_type=code&scope=identify&prompt=none`;
