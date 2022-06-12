@@ -11,14 +11,12 @@ const authURL = `https://discord.com/api/oauth2/authorize?client_id=${ environme
 const hasAuth: RequestHandler = async (req, res, next) => {
   if (req.query.code) {
     const client = new soundBoardClient();
-    await client.authenticate(String(req.query.code))
-      .then(() => {
-        if (client.accessToken) {
-          res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
-          res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
-          res.redirect('/')
-        }
-      })
+    await client.authenticate(String(req.query.code));
+    if (client.accessToken) {
+      res.cookie('accesstoken', client.accessToken, { httpOnly: true, maxAge: 1000 * 60 * 30 });
+      res.cookie('refreshtoken', client.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 48 });
+      res.redirect('/');
+    }
     return;
   }
 

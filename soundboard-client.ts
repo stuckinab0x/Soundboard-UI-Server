@@ -51,37 +51,39 @@ export default class soundBoardClient {
     params.append('grant_type', 'refresh_token');
     params.append('refresh_token', this.refreshToken);
     }
-    await axios.post('https://discord.com/api/oauth2/token', params)
-    .then(res => res.data)
-    .then(data => {
-      this.accessToken = data.access_token;
-      this.refreshToken = data.refresh_token;
+    try {
+      const res = await axios.post('https://discord.com/api/oauth2/token', params);
+      this.accessToken = res.data.access_token;
+      this.refreshToken = res.data.refresh_token;
       console.log(`token response from discord`);
-    })
-    .catch(error => console.log(error));
+    }
+    catch (error) {
+      console.log(error);
+    }
   }
 
   async getUser(retry?: boolean) {
-    await axios.get('https://discord.com/api/users/@me', {
-      headers: { "Authorization": `Bearer ${ this.accessToken }` },
-    })
-      .then(res => res.data)
-      .then(data => {
-        this.userData.name = data.username;
-        this.userData.userID = data.id;
-        this.userData.avatar = data.avatar;
+    try {
+      const res = await axios.get('https://discord.com/api/users/@me', {
+        headers: { "Authorization": `Bearer ${ this.accessToken }` },
       })
-      .catch(error => console.log(`getUser failed. refresh token tried yet: ${ retry }. ${ error }`));
+      this.userData.name = res.data.username;
+      this.userData.userID = res.data.id;
+      this.userData.avatar = res.data.avatar;
+    }
+    catch (error) {
+      console.log(`getUser failed. refresh token tried yet: ${ retry? 'yes' : 'no' }. ${ error }`)
+    }
     if (retry) return;
-    if (!this.userData.name) await this.authenticate()
-      .then(() => this.getUser(true))
-      .catch(error => console.log(error))
+    if (!this.userData.name) {
+      await this.authenticate();
+      await this.getUser(true);
+    }
   }
 
   getBotSounds() {
     return axios.get(`${ environment.botURL }/soundlist`, this.botConfig)
-      .then(res => res.data)
-      .then(data => { this.userData.soundList = data; })
+      .then(res => { this.userData.soundList = res.data; })
       .catch(error => console.log(error));
   }
 
