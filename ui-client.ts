@@ -4,7 +4,7 @@ import environment from './environment';
 declare global {
   namespace Express {
     interface Request {
-      client: soundBoardClient;
+      client: UIClient;
     }
   }
 }
@@ -16,7 +16,7 @@ interface UserData {
   soundList: string[];
 }
 
-export default class soundBoardClient {
+export default class UIClient {
   public accessToken: string;
   public refreshToken: string;
   public userData: UserData;
